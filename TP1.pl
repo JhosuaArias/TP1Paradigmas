@@ -1,4 +1,4 @@
-% potencia/2(+C,-P)
+% potencia/2(+C,-P) Devuelve una lista a la que se le aplicó la operación potencia
 potencia([],[]).
 potencia([X|Xr],P):-
 	subtract([X|Xr],[X],R),
@@ -6,7 +6,7 @@ potencia([X|Xr],P):-
 	agregar([X],S,O),
 	union(O,S,P).
 
-%agregar/3(E,C,F)
+%agregar/3(+E,+C,-F) devuelve una lista de listas, en donde a cada lista se le agregó el elemento E
 agregar(E,[],[E,[]]).
 agregar(E,[C|Cr],F):-
 	agregar(E,Cr,M),
@@ -14,7 +14,7 @@ agregar(E,[C|Cr],F):-
 	union(M,[P],F).
    
    
-% cartesiano/2(+A,+B,-C)
+% cartesiano/2(+A,+B,-C) Devuelve una lista a la que se le aplicó la operación cartesiano
  cartesiano([],_,[]).
  cartesiano(_,[],[]).
  cartesiano([],[],[]).
