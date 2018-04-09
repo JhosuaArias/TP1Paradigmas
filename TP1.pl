@@ -37,13 +37,17 @@ encripta(_,_,As,_,_):- not(is_list(As)), write('error: alguno de los argumentos 
 encripta(He,Ae,As,Hs,Ef):-
 	crea_alfabeto_entrada(Ae),
 	crea_alfabeto_salida(As),
-	encripta_rec(He,Ae,As,Hs,Ef).
+	encripta_rec(He,Ae,As,Hs,Ef),
+	retractall(alfabetoE(X)),
+	retractall(alfabetoS(X)).
+	
 
 encripta_rec([],[He|_],[As|_],[],[He,As]):- !.
 encripta_rec([He|Her],[He|Aer],[As|Asr],Hs,Efs):-
 	encripta_rec(Her,[He|Aer],[As|Asr],Xr,Efs),
-	append([As],Xr,Hs).
-encripta_rec([He|Her],[Ae|Aer],[As|Asr],Hs,Efs):-
+	append([As],Xr,Hs),
+	!.
+encripta_rec([He|Her],_,_,Hs,Efs):-
 	rota_alfabeto_entrada(P),
 	rota_alfabeto_salida(Q),
 	encripta_rec([He|Her],P,Q,Hs,Efs).
@@ -52,15 +56,20 @@ encripta_rec([He|Her],[Ae|Aer],[As|Asr],Hs,Efs):-
 %decripta/5(+Hs,+Ae,+As,+Ef,-He) Hs: hilera encriptada, Ae: alfabeto de entrada, As: alfabeto de salida,
 %Ef: estado final de la maquina formado por un par [ae,as], donde ae y as son simbolos del alfabeto de 
 %entrada y salida en lo que quedo la maquina luego de encriptar He. He: hilera desencriptada.
-decripta(Hs,Ae,As,Ef,He):- not(is_list(Hs)),write('error: alguno de los argumentos no es válido'),!, fail.
-decripta(Hs,Ae,As,Ef,He):- not(is_list(Ae)),write('error: alguno de los argumentos no es válido'),!, fail.
-decripta(Hs,Ae,As,Ef,He):- not(is_list(As)),write('error: alguno de los argumentos no es válido'),!, fail.
-decripta(Hs,Ae,As,Ef,He):- not(is_list(Ef)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(Hs,_,_,_,_):- not(is_list(Hs)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(_,Ae,_,_,_):- not(is_list(Ae)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(_,_,As,_,_):- not(is_list(As)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(_,_,_,Ef,_):- not(is_list(Ef)),write('error: alguno de los argumentos no es válido'),!, fail.
 
 decripta(Hs,Ae,As,Ef,He):-
 	crea_alfabeto_entrada(Ae),
-	crea_alfabeto_salida(As).
+	crea_alfabeto_salida(As),
+	decripta_rec(Hs,Ae,As,Ef,He),
+	retractall(alfabetoE(X)),
+	retractall(alfabetoS(X)).
 
+decripta_rec(Hs,Ae,As,Ef,He).
+	
 %crea_alfabeto_entrada/1(+Ae) crea un hecho para que Ae sea un alfabeto de entrada
 crea_alfabeto_entrada(Ae):- assert(alfabetoE(Ae)).
 %crea_alfabeto_salida/1(As) crea un hecho para que As sea un alfabeto de salida
