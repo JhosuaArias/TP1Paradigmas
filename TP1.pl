@@ -38,13 +38,15 @@ encripta(He,Ae,As,Hs,Ef):-
 	crea_alfabeto_entrada(Ae),
 	crea_alfabeto_salida(As),
 	encripta_rec(He,Ae,As,Hs,Ef).
+
 encripta_rec([],[He|_],[As|_],[],[He,As]):- !.
-encripta_rec([He|Her],[He|Aer],[As|Asr],[Hs|Hsr],Efs):-
-	encripta_rec(Her,[He|Aer],[As|Asr],Hsr,Efs).
-encripta_rec([He|Her],[Ae|Aer],[As|Asr],[Hs|Hsr],Efs):-
+encripta_rec([He|Her],[He|Aer],[As|Asr],Hs,Efs):-
+	encripta_rec(Her,[He|Aer],[As|Asr],Xr,Efs),
+	append([As],Xr,Hs).
+encripta_rec([He|Her],[Ae|Aer],[As|Asr],Hs,Efs):-
 	rota_alfabeto_entrada(P),
 	rota_alfabeto_salida(Q),
-	encripta_rec([He|Her],P,Q,[Hs|Hsr],Efs).
+	encripta_rec([He|Her],P,Q,Hs,Efs).
 	
 	
 %decripta/5(+Hs,+Ae,+As,+Ef,-He) Hs: hilera encriptada, Ae: alfabeto de entrada, As: alfabeto de salida,
