@@ -29,23 +29,32 @@ cartesiano([X|Xr],[Y|Yr],C):-
 %encripta/5(+He,+Ae,+As,-Hs,-Ef) He: hilera a encriptar, Ae: alfabeto de entrada, As: alfabeto de salida
 %Ef: estado final de la maquina formado por un par [ae,as], donde ae y as son simbolos del alfabeto de 
 %entrada y salida en lo que quedo la maquina luego de encriptar He. Hs: hilera encriptada.
-encripta(He,Ae,As,Hs,Ef):- 
-	not(is_list(He)),
-	not(is_list(Ae)),
-	not(is_list(As)),
-	write('error: alguno de los argumentos no es válido'),!, fail.
+encripta(He,_,_,_,_):- not(is_list(He)), write('error: alguno de los argumentos no es válido'),!, fail.
+encripta(_,Ae,_,_,_):- not(is_list(Ae)), write('error: alguno de los argumentos no es válido'),!, fail.
+encripta(_,_,As,_,_):- not(is_list(As)), write('error: alguno de los argumentos no es válido'),!, fail.	
+	
+	
 encripta(He,Ae,As,Hs,Ef):-
 	crea_alfabeto_entrada(Ae),
-	crea_alfabeto_salida(As).
+	crea_alfabeto_salida(As),
+	encripta_rec(He,Ae,As,Hs,Ef).
+encripta_rec([],[He|_],[As|_],[],[He,As]):- !.
+encripta_rec([He|Her],[He|Aer],[As|Asr],[Hs|Hsr],Efs):-
+	encripta_rec(Her,[He|Aer],[As|Asr],Hsr,Efs).
+encripta_rec([He|Her],[Ae|Aer],[As|Asr],[Hs|Hsr],Efs):-
+	rota_alfabeto_entrada(P),
+	rota_alfabeto_salida(Q),
+	encripta_rec([He|Her],P,Q,[Hs|Hsr],Efs).
+	
+	
 %decripta/5(+Hs,+Ae,+As,+Ef,-He) Hs: hilera encriptada, Ae: alfabeto de entrada, As: alfabeto de salida,
 %Ef: estado final de la maquina formado por un par [ae,as], donde ae y as son simbolos del alfabeto de 
 %entrada y salida en lo que quedo la maquina luego de encriptar He. He: hilera desencriptada.
-decripta(Hs,Ae,As,Ef,He):-
-	not(is_list(Hs)),
-	not(is_list(Ae)),
-	not(is_list(As)),
-	not(is_list(Ef)),
-	write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(Hs,Ae,As,Ef,He):- not(is_list(Hs)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(Hs,Ae,As,Ef,He):- not(is_list(Ae)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(Hs,Ae,As,Ef,He):- not(is_list(As)),write('error: alguno de los argumentos no es válido'),!, fail.
+decripta(Hs,Ae,As,Ef,He):- not(is_list(Ef)),write('error: alguno de los argumentos no es válido'),!, fail.
+
 decripta(Hs,Ae,As,Ef,He):-
 	crea_alfabeto_entrada(Ae),
 	crea_alfabeto_salida(As).
@@ -65,4 +74,3 @@ rota_alfabeto_salida(L):-
 	retract(alfabetoS([Cabeza|Resto])),
 	append(Resto,[Cabeza],L),
 	assert(alfabetoS(L)).
-
