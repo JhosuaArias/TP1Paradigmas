@@ -35,8 +35,9 @@ encripta(_,_,As,_,_):- not(is_list(As)), write('error: alguno de los argumentos 
 	
 encripta(He,Ae,As,Hs,Ef):-
 	crea_alfabeto_entrada(Ae),
-	crea_alfabeto_salida(As),
-	encripta_rec(He,Ae,As,Hs,Ef),
+	reversa(As,RAs),
+	crea_alfabeto_salida(RAs),
+	encripta_rec(He,Ae,RAs,Hs,Ef),
 	retractall(alfabetoE(X)),
 	retractall(alfabetoS(X)).
 	
@@ -85,3 +86,12 @@ rota_alfabeto_salida(L):-
 	retract(alfabetoS([Cabeza|Resto])),
 	append(Resto,[Cabeza],L),
 	assert(alfabetoS(L)).
+
+% reversa(+Lista,-Reversa): Reversa es la lista Lista invertida
+%    Lista, Reversa: listas
+%    ?- reversa([a,b],X). -> X = [b,a]
+%    ?- reversa([a,b,[c,d],e],X). -> X = [e,[c,d],b,a]
+reversa([X],[X]):- !.
+reversa([X|M],Z):-
+	reversa(M,Y),
+	append(Y,[X],Z).
