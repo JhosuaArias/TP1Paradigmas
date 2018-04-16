@@ -33,9 +33,10 @@ encripta(He,_,_,_,_):- not(is_list(He)), write('error: alguno de los argumentos 
 encripta(_,Ae,_,_,_):- not(is_list(Ae)), write('error: alguno de los argumentos no es válido'),!, fail.
 encripta(_,_,As,_,_):- not(is_list(As)), write('error: alguno de los argumentos no es válido'),!, fail.	
 	
-encripta(He,Ae,As,Hs,Ef):-
+encripta(He,Ae,[As|Asr],Hs,Ef):-
 	crea_alfabeto_entrada(Ae),
-	reversa(As,RAs),
+	reversa(Asr,RAsr),
+	append([As],RAsr,RAs),
 	crea_alfabeto_salida(RAs),
 	encripta_rec(He,Ae,RAs,Hs,Ef),
 	retractall(alfabetoE(X)),
@@ -61,15 +62,25 @@ decripta(_,Ae,_,_,_):- not(is_list(Ae)),write('error: alguno de los argumentos n
 decripta(_,_,As,_,_):- not(is_list(As)),write('error: alguno de los argumentos no es válido'),!, fail.
 decripta(_,_,_,Ef,_):- not(is_list(Ef)),write('error: alguno de los argumentos no es válido'),!, fail.
 
-decripta(Hs,Ae,As,Ef,He):-
-	crea_alfabeto_entrada(Ae),
-	crea_alfabeto_salida(As),
-	decripta_rec(Hs,Ae,As,Ef,He),
+decripta(Hs,Ae,[As|Asr],_,He):-
+	crea_alfabeto_salida(Ae),
+	reversa(Asr,RAsr),
+	append([As],RAsr,RAs),
+	crea_alfabeto_entrada(RAs),
+	decripta_rec(Hs,RAs,Ae,He),
 	retractall(alfabetoE(X)),
 	retractall(alfabetoS(X)).
 	
 %decripta_rec/5(Hs,Ae,As,Ef,He) es la parte recursiva de decripta/5.
-decripta_rec(Hs,Ae,As,Ef,He).
+decripta_rec([],_,_,[]):- !.
+decripta_rec([He|Her],[He|Aer],[As|Asr],Hs):-
+	decripta_rec(Her,[He|Aer],[As|Asr],Xr),
+	append([As],Xr,Hs),
+	!.
+decripta_rec([He|Her],_,_,Hs):-
+	rota_alfabeto_entrada(P),
+	rota_alfabeto_salida(Q),
+	decripta_rec([He|Her],P,Q,Hs).
 	
 %crea_alfabeto_entrada/1(+Ae) crea un hecho para que Ae sea un alfabeto de entrada
 crea_alfabeto_entrada(Ae):- assert(alfabetoE(Ae)).
