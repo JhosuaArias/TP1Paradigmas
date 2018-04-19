@@ -55,27 +55,35 @@ qr(N,[A|Ar],Yr):-
 %bap(+N,+A,-S)/2 S es el subarbol de A cuya raiz es N, nil si el subarbol no existe
 bap(N,_,_):- 
 	is_list(N),
-	write('El elemento buscado debe ser atomico').
-bap(N,[N|_],_):-
-	write(N).
+	write('El elemento buscado debe ser atomico'), ! .
+
+bap(N,[N|Nr],S):-
+	write(N), !. 
+
 bap(N,[A|Ar],S):-
 	atom(A),
 	write(A), write(" "),
 	bap(N,Ar,S).
+
 bap(N,[A|Ar],S):-
 	is_list(A),
 	bap2(N,A,Ar,S).
-bap(N,[],[]).
+
+bap(N,[],[]):- !.
+
 bap(N,[],S):-
 	nl, 
 	bap(N,S,Z).
+
 %bap(+N,+A,+B,-S)/3 S es el la lista concatenada de los siguientes niveles del arbol.
-bap2(N,[N|Ar],B,S):-
-	write(N).
+bap2(N,[N|Nr],B,S):-
+	write(N), !. 
+	
 bap2(N,[A|Ar],B,S):-
 	write(A), write(" "),
 	append(S,Ar,Z),
-	bap(N,B,Z).
+	bap(N,B,Z), !.
+
 
 %encripta/5(+He,+Ae,+As,-Hs,-Ef) He: hilera a encriptar, Ae: alfabeto de entrada, As: alfabeto de salida
 %Ef: estado final de la maquina formado por un par [ae,as], donde ae y as son simbolos del alfabeto de 
