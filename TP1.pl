@@ -1,3 +1,8 @@
+%Tarea Programada 1 Paradigmas Computacionales
+% Jhosua Arias - B50657
+% Pablo Madrigal - B33925
+% Jorge Remón - B55825
+
 %potencia/2(+C,-P) Devuelve una lista a la que se le aplicó la operación potencia 
 potencia(X,_):- not(is_list(X)), write('error: el argumento no es un conjunto'), !, fail.
 potencia([],[]) :- !.
