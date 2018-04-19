@@ -39,17 +39,18 @@ bpp(N,[N|Yr],[N|Yr]):-
 bpp(N,[X|Y],S):-
 	write(X),
 	qr(N,Y,S).
+bpp(_,[],[]):- !.
 	
 %qr/3(+N,+A,-Yr) Devuelve el subarbol de A cuya raiz es N, revisando las ramas del A para ver si alguna es N
-qr(N,[A|Ar],Yr):-
+qr(N,[A|_],Yr):-
 	is_list(A),
 	bpp(N,A,Yr).
-qr(N,[N|_],Yr):-
+qr(N,[N|_],N):-
 	write(N),!.
 qr(N,[A|Ar],Yr):-
 	atom(A),write(A),qr(N,Ar,Yr).
 qr(N,[A|Ar],Yr):-
-	is_list(A),qr(N,Ar,Yr).	
+	is_list(A),qr(N,Ar,Yr).
 	
 
 %bap(+N,+A,-S)/2 S es el subarbol de A cuya raiz es N, nil si el subarbol no existe
